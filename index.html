@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eid Al-Adha 1447 — Infuse Advisory</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height: 100vh;
+    background: #1a4d28;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Tajawal', sans-serif;
+    padding-bottom: 48px;
+  }
+  .topbar {
+    width: 100%;
+    background: #0f3018;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .topbar img { height: 56px; width: auto; max-width: 100%; object-fit: contain; }
+  .wrapper {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.45);
+    width: 94%;
+    max-width: 520px;
+    margin: 28px auto 0;
+    padding: 20px 20px 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 13px;
+  }
+  .card-title {
+    font-size: 21px;
+    font-weight: 700;
+    color: #1a4d28;
+    text-align: center;
+  }
+  .name-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #c5d4c8;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: 'Tajawal', sans-serif;
+    color: #222;
+    outline: none;
+    text-align: center;
+    transition: border-color 0.2s;
+    background: #fafcfb;
+  }
+  .name-input::placeholder { color: #aab8ae; }
+  .name-input:focus { border-color: #1a4d28; }
+  #greetingCanvas {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 6px;
+  }
+  .save-btn {
+    background: #1a4d28;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 13px 60px;
+    font-size: 16px;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .save-btn:hover  { background: #0f3018; transform: translateY(-1px); }
+  .save-btn:active { transform: translateY(0); }
+  .star-corner {
+    position: fixed;
+    bottom: 22px; right: 24px;
+    opacity: 0.45; pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="logo.jpg" alt="Infuse Advisory">
+</div>
+
+<div class="wrapper">
+  <div class="card-title">Eid Al-Adha 1447</div>
+  <input class="name-input" id="nameInput" type="text"
+    placeholder="Please input your name"
+    oninput="renderCard()" dir="auto">
+  <canvas id="greetingCanvas" width="1080" height="1350"></canvas>
+  <button class="save-btn" onclick="saveImage()">Save image</button>
+</div>
+
+<svg class="star-corner" width="52" height="52" viewBox="0 0 52 52">
+  <path d="M26 2L29.5 22.5L50 26L29.5 29.5L26 50L22.5 29.5L2 26L22.5 22.5Z" fill="#a8d5b5"/>
+</svg>
+
+<script>
+const CARD_SRC = "eid-al-adha-card.jpg";
+const canvas = document.getElementById('greetingCanvas');
+const ctx    = canvas.getContext('2d');
+
+const cardImg = new Image();
+cardImg.src   = CARD_SRC;
+cardImg.onload = () => {
+  if (cardImg.naturalWidth && cardImg.naturalHeight) {
+    canvas.width  = cardImg.naturalWidth;
+    canvas.height = cardImg.naturalHeight;
+  }
+  renderCard();
+};
+document.fonts.ready.then(renderCard);
+
+function renderCard() {
+  const W = canvas.width;
+  const H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Draw Eid Al-Adha 1447 card image (native aspect ratio)
+  if (cardImg.complete && cardImg.naturalWidth > 0) {
+    ctx.drawImage(cardImg, 0, 0, cardImg.naturalWidth, cardImg.naturalHeight);
+  }
+
+  const name   = document.getElementById('nameInput').value.trim();
+  const pillCX = W * 0.50;
+  const pillCY = H * 0.905;
+  const pillW  = W * 0.5;
+  const pillH  = H * 0.048;
+  const r      = pillH / 2;
+
+  // White pill — covers existing rectangle in image
+  ctx.save();
+  ctx.fillStyle   = 'rgba(255,255,255,0.97)';
+  ctx.strokeStyle = 'rgba(180,205,185,0.4)';
+  ctx.lineWidth   = 1.5;
+  rrect(ctx, pillCX - pillW/2, pillCY - pillH/2, pillW, pillH, r);
+  ctx.fill();
+  ctx.stroke();
+
+  if (name) {
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle    = '#1a4d28';
+    ctx.font         = `500 ${Math.round(pillH * 0.50)}px "Tajawal", sans-serif`;
+    ctx.fillText(name, pillCX, pillCY);
+  }
+  ctx.restore();
+}
+
+function rrect(c,x,y,w,h,r) {
+  c.beginPath();
+  c.moveTo(x+r,y); c.lineTo(x+w-r,y);
+  c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r);
+  c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h);
+  c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r);
+  c.quadraticCurveTo(x,y,x+r,y);
+  c.closePath();
+}
+
+// Support URL param ?name=Ahmed
+window.addEventListener('DOMContentLoaded', () => {
+  const p = new URLSearchParams(window.location.search);
+  const n = p.get('name');
+  if (n) {
+    document.getElementById('nameInput').value = decodeURIComponent(n);
+    renderCard();
+  }
+});
+
+function saveImage() {
+  const name = document.getElementById('nameInput').value.trim() || 'Eid';
+  const a = document.createElement('a');
+  a.download = 'Eid-Mubarak-' + name.replace(/\s+/g,'-') + '.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+renderCard();
+</script>
+</body>
+</html>
